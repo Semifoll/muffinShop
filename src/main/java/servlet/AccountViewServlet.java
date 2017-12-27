@@ -20,14 +20,30 @@ package servlet;
         import utils.DBUtils;
         import utils.MyUtils;
 
+/**
+ * Класс сервлет для страницы представляния страницы списка аккаунтов
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebServlet(urlPatterns = { "/accountView" })
 public class AccountViewServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Конструктор класса AccountViewServlet с вызовом класса-родителя.
+     */
     public AccountViewServlet() {
         super();
     }
 
+    /**
+     * Метод для перехвата HTTP запросов GET. Формирует список пользователей и список ролей.
+     * В случае ошибок во время формирования списков пересылает на страницу ошибку.
+     * @param request
+     * @param response
+     * @throws ServletException - в случае ошибки запроса от БД
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -74,8 +90,13 @@ public class AccountViewServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-
-
+    /**
+     * Метод для перехвата HTTP запросов Post.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

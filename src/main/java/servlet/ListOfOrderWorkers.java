@@ -18,30 +18,49 @@ import beans.UserAccount;
 import utils.DBUtils;
 import utils.MyUtils;
 
-@WebServlet(urlPatterns = { "/orderListWorker" })
+/**
+ * Класс сервлет для предоставления списка заказов для рабочих.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ *
+ * @version 1.0
+ * @autor Trusov Anton
+ */
+@WebServlet(urlPatterns = {"/orderListWorker"})
 public class ListOfOrderWorkers extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Конструктор класса ListOfOrderWorkers с вызовом класса-родителя.
+     */
     public ListOfOrderWorkers() {
         super();
     }
 
+    /**
+     * Метод для перехвата HTTP запросов GET. Получает список из базы данных
+     * и перенаправляет на страницу для представления этого списка.
+     * Переменная статус отвечает за список отображаемых заказов.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Connection conn = MyUtils.getStoredConnection(request);
 
-        UserAccount user  = MyUtils.getLoginedUser(session);
+        UserAccount user = MyUtils.getLoginedUser(session);
         // Если еще не вошел в систему (login).
-        if (user == null    ) {
+        if (user == null) {
             // Redirect (Перенаправить) к странице login.
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
         //
-        if(!(user.getAccessRights().equals("Admin"))){
-            if(!(user.getAccessRights().equals("Worker"))){
+        if (!(user.getAccessRights().equals("Admin"))) {
+            if (!(user.getAccessRights().equals("Worker"))) {
                 response.sendRedirect(request.getContextPath() + "/orderList");
                 return;
             }
@@ -57,7 +76,7 @@ public class ListOfOrderWorkers extends HttpServlet {
             status = "Complete";
         }
         try {
-            list = DBUtils.listOrder(conn,status);
+            list = DBUtils.listOrder(conn, status);
         } catch (SQLException e) {
             e.printStackTrace();
             errorString = e.getMessage();
@@ -77,6 +96,14 @@ public class ListOfOrderWorkers extends HttpServlet {
 
     }
 
+    /**
+     * Метод для перехвата HTTP запросов POST. Ставит переменную статус из страницы к запросу.
+     * Переменная статус отвечает за список отображаемых заказов.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -86,7 +113,7 @@ public class ListOfOrderWorkers extends HttpServlet {
         String status;
         try {
             status = request.getParameter("statusOrder");
-            if(status == null){
+            if (status == null) {
                 status = "Complete";
             }
         } catch (Exception e) {

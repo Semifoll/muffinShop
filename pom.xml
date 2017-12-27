@@ -7,6 +7,15 @@
   <version>1.0-SNAPSHOT</version>
   <name>muffinShop Maven Webapp</name>
   <url>http://maven.apache.org</url>
+
+  <repositories>
+    <repository>
+      <id>localRep</id>
+      <name>Local Repo</name>
+      <url>file:${project.basedir}/src/main/resources/lib</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -23,22 +32,21 @@
     </dependency>
 
     <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc6</artifactId>
+      <groupId>localRep</groupId>
+      <artifactId>ojdbc6.jar</artifactId>
       <version>11.2.0.4</version>
-      <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ojdbc6.jar</systemPath>
     </dependency>
 
 
     <dependency>
-      <groupId>jstl</groupId>
-      <artifactId>jstl</artifactId>
+      <groupId>localRep</groupId>
+      <artifactId>jstl-1.2.jar</artifactId>
       <version>1.2</version>
-      <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/jstl-1.2.jar</systemPath>
     </dependency>
 
-
   </dependencies>
+
+
   <build>
     <pluginManagement>
       <plugins>

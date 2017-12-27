@@ -1,33 +1,47 @@
 
 package servlet;
 
-        import java.io.IOException;
-        import java.sql.Connection;
-        import java.sql.SQLException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 
-        import javax.servlet.RequestDispatcher;
-        import javax.servlet.ServletException;
-        import javax.servlet.annotation.WebServlet;
-        import javax.servlet.http.HttpServlet;
-        import javax.servlet.http.HttpServletRequest;
-        import javax.servlet.http.HttpServletResponse;
-        import javax.servlet.http.HttpSession;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
-        import utils.DBUtils;
-        import utils.MyUtils;
+import utils.DBUtils;
+import utils.MyUtils;
 
-
-@WebServlet(urlPatterns = { "/changeOrderStatus" })
+/**
+ * Класс сервлет для изменения статуса заказа работником.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
+@WebServlet(urlPatterns = {"/changeOrderStatus"})
 public class ChangeOrderStatus extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Конструктор класса BuyProduct с вызовом класса-родителя.
+     */
     public ChangeOrderStatus() {
         super();
     }
 
-    // Показать страницу Login.
+    /**
+     * Метод для перехвата HTTP запросов GET. Производит отправку на страницу заказов для работника.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -39,6 +53,15 @@ public class ChangeOrderStatus extends HttpServlet {
 
     // Когда пользователь вводит userName & password, и нажимает Submit.
     // Этот метод будет выполнен.
+
+    /**
+     * Метод для перехвата HTTP запросов POST. Производит обновление статуса заказа
+     * через базу данных с помощью данных переданых в запросе.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -60,13 +83,12 @@ public class ChangeOrderStatus extends HttpServlet {
             dispatcher.forward(request, response);
             return;
         }
-        System.out.println(" codOrder: "+ codOrder + " newStatus"+ newStatus);
-
+        System.out.println(" codOrder: " + codOrder + " newStatus" + newStatus);
 
 
         String statusString = null;
         try {
-            DBUtils.updateOrderStatus(conn,codOrderChange,newStatus);
+            DBUtils.updateOrderStatus(conn, codOrderChange, newStatus);
         } catch (SQLException e) {
             errorString = e.getMessage();
             request.setAttribute("errorString", errorString);
@@ -74,9 +96,9 @@ public class ChangeOrderStatus extends HttpServlet {
                     .getRequestDispatcher("/WEB-INF/views/errorPage.jsp");
             dispatcher.forward(request, response);
         }
-        if(errorString == null){
+        if (errorString == null) {
             statusString = "Updating success";
-            System.out.println("Update sucess user with cod "+ codOrderChange+" on "+newStatus);
+            System.out.println("Update sucess user with cod " + codOrderChange + " on " + newStatus);
             try {
                 DBUtils.commit(conn);
             } catch (SQLException e) {

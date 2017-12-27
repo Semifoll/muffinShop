@@ -9,39 +9,68 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
  
 import beans.UserAccount;
- 
+/**
+ * Класс для утилит работы с БД.
+ * <b>ATT_NAME_CONNECTION</b> - атрибуты для подключения.
+ * <b>ATT_NAME_USER_NAME</b> - атрибуты для данных пользователя из кукки.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 public class MyUtils {
- 
+    /** Свойство - атрибуты для подключения*/
     public static final String ATT_NAME_CONNECTION = "ATTRIBUTE_FOR_CONNECTION";
- 
+    /** Свойство - атрибуты для данных пользователя из кукки*/
     private static final String ATT_NAME_USER_NAME = "ATTRIBUTE_FOR_STORE_USER_NAME_IN_COOKIE";
  
     // Сохранить Connection в attribute в request.
     // Данная информация хранения существует только во время запроса (request)
     // до тех пор, пока данные возвращаются приложению пользователя.
+
+    /**
+     * Метод для сохранения данных подключения в константу из запроса.
+     * @param request - запрос.
+     * @param conn - ссылка на подключение к БД.
+     */
     public static void storeConnection(ServletRequest request, Connection conn) {
         request.setAttribute(ATT_NAME_CONNECTION, conn);
     }
- 
+
+    /**
+     * Метод для получения данных подключения из константы.
+     * @param request
+     * @return
+     */
     // Получить объект Connection сохраненный в attribute в request.
     public static Connection getStoredConnection(ServletRequest request) {
         Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
         return conn;
     }
- 
-    // Сохранить информацию пользователя, который вошел в систему (login) в Session.
+
+    /**
+     * Метод для сохранения информации пользователя который вощел в систему( Login) в Session.
+     * @param session - сессия.
+     * @param loginedUser - авторизированный пользователь.
+     */
     public static void storeLoginedUser(HttpSession session, UserAccount loginedUser) {
         // В JSP можно получить доступ через ${loginedUser}
         session.setAttribute("loginedUser", loginedUser);
     }
- 
-    // Получить информацию пользователя, сохраненная в Session.
+
+    /**
+     * Метод для получения информации пользователя, сохраненная в Session.
+     * @param session - сессия.
+     * @return - возращает информацию пользователя.
+     */
     public static UserAccount getLoginedUser(HttpSession session) {
         UserAccount loginedUser = (UserAccount) session.getAttribute("loginedUser");
         return loginedUser;
     }
- 
-    // Сохранить информацию пользователя в Cookie.
+
+    /**
+     * Метод для сохранения информации пользователя в кукки.
+     * @param response - ответ.
+     * @param user - данные о пользователе.
+     */
     public static void storeUserCookie(HttpServletResponse response, UserAccount user) {
         System.out.println("Store user cookie");
         Cookie cookieUserName = new Cookie(ATT_NAME_USER_NAME, user.getNickName());
@@ -49,7 +78,12 @@ public class MyUtils {
         cookieUserName.setMaxAge(24 * 60 * 60);
         response.addCookie(cookieUserName);
     }
- 
+
+    /**
+     * Метод для получения имени пользователя из сохраненных данных в кукки.
+     * @param request - запрос.
+     * @return - возращает имя пользователя.
+     */
     public static String getUserNameInCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -61,8 +95,11 @@ public class MyUtils {
         }
         return null;
     }
- 
-    // Удалить Cookie пользователя
+
+    /**
+     * Метод для удаления данных из кукки.
+     * @param response - ответ.
+     */
     public static void deleteUserCookie(HttpServletResponse response) {
         Cookie cookieUserName = new Cookie(ATT_NAME_USER_NAME, null);
         // 0 секунд. (Данный Cookie будет сразу недействителен)

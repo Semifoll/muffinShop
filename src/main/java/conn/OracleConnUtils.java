@@ -4,9 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Locale;
-
+/**
+ * Класс служит для предоставления функций манипуляции с подключением.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 public class OracleConnUtils {
-
+	/** Функция для изменения параметров соединения с базой данных.
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @return Возвращает ссылку на подключение к базе данных Oracle.
+	 */
 	public static Connection getOracleConnection() throws ClassNotFoundException, SQLException {
 
 		// Примечание: Изменить параметры соединения соответствующе.
@@ -17,7 +25,9 @@ public class OracleConnUtils {
 
 		return getOracleConnection(hostName, sid, userName, password);
 	}
-
+	/** Функция для изменения параметров соединения с базой данных.
+	 * @return Возвращает ссылку на подключение к базе данных Oracle.
+	 */
 	public static Connection getOracleConnection(String hostName, String sid, String userName, String password) throws ClassNotFoundException, SQLException {
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");

@@ -21,14 +21,31 @@ package servlet;
         import utils.DBUtils;
         import utils.MyUtils;
 
+/**
+ * Класс сервлет для страницы предоставления списка продуктов для работников магазина.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebServlet(urlPatterns = { "/aProductList" })
 public class AdminProductListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Конструктор класса AdminProductListServlet с вызовом класса-родителя.
+     */
     public AdminProductListServlet() {
         super();
     }
 
+    /**
+     * Метод для перехвата HTTP запросов GET. Делает запрос к базе данных для получения
+     * данных о списке продуктов.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -60,6 +77,13 @@ public class AdminProductListServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
+    /**
+     * Метод для перехвата HTTP запросов POST.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

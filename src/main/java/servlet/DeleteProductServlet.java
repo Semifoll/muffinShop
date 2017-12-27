@@ -13,15 +13,28 @@ import javax.servlet.http.HttpServletResponse;
  
 import utils.DBUtils;
 import utils.MyUtils;
- 
+/**
+ * Класс сервлет для удаления продукта.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebServlet(urlPatterns = { "/deleteProduct" })
 public class DeleteProductServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
- 
+    /**
+     * Конструктор класса DeleteProductServlet с вызовом класса-родителя.
+     */
     public DeleteProductServlet() {
         super();
     }
- 
+    /**
+     * Метод для перехвата HTTP запросов GET. Удаляет продукт из базы если таковой существует.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -54,7 +67,14 @@ public class DeleteProductServlet extends HttpServlet {
         }
  
     }
- 
+
+    /**
+     * Метод для перехвата HTTP запросов GET.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

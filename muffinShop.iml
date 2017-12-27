@@ -24,7 +24,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.oracle:ojdbc6:11.2.0.4" level="project" />
-    <orderEntry type="library" name="Maven: jstl:jstl:1.2" level="project" />
+    <orderEntry type="library" name="Maven: localRep:ojdbc6.jar:11.2.0.4" level="project" />
+    <orderEntry type="library" name="Maven: localRep:jstl-1.2.jar:1.2" level="project" />
   </component>
 </module>

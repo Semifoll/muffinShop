@@ -15,22 +15,48 @@ import javax.servlet.http.HttpSession;
 
 import beans.UserAccount;
 import utils.DBUtils;
-import utils.MyUtils;	
+import utils.MyUtils;
 
- 
-@WebServlet(urlPatterns = { "/login" })
+/**
+ * Класс сервлет для предоставления списка заказов для рабочих.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ *
+ * @version 1.0
+ * @autor Trusov Anton
+ */
+@WebServlet(urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
- 
+    /**
+     * Конструктор класса LoginServlet с вызовом класса-родителя.
+     */
     public LoginServlet() {
         super();
     }
- 
+
     // Показать страницу Login.
+    /**
+     * Метод для перехвата HTTP запросов GET. Если пользователь авторизирован
+     * то пересылает на страницу инфо, иначе пересылает на страницу Login.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
- 
+        HttpSession session = request.getSession();
+
+        // Проверить, вошел ли пользователь в систему (login) или нет.
+        UserAccount loginedUser = MyUtils.getLoginedUser(session);
+
+        // Если еще не вошел в систему (login).
+        if (loginedUser != null) {
+            // Redirect (Перенаправить) к странице login.
+            response.sendRedirect(request.getContextPath() + "/userInfo");
+            return;
+        }
         // Forward (перенаправить) к странице /WEB-INF/views/loginView.jsp
         // (Пользователь не может прямо получить доступ
         // к страницам JSP расположенные в папке WEB-INF).
@@ -40,9 +66,14 @@ public class LoginServlet extends HttpServlet {
         dispatcher.forward(request, response);
 
     }
- 
-    // Когда пользователь вводит userName & password, и нажимает Submit.
-    // Этот метод будет выполнен.
+
+    /**
+     * Метод для перехвата HTTP запросов POST. Производит авторизацию пользвателя, если ошибка то заново.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -54,8 +85,8 @@ public class LoginServlet extends HttpServlet {
         UserAccount user = null;
         boolean hasError = false;
         String errorString = null;
- 
-        if (nickName == null||  password == null ||
+
+        if (nickName == null || password == null ||
                 nickName.length() == 0 || password.length() == 0) {
             hasError = true;
             errorString = "Required nick name and password!";
@@ -82,15 +113,15 @@ public class LoginServlet extends HttpServlet {
             user = new UserAccount();
             user.setNickName(nickName);
             user.setPassword(password);
- 
+
             // Сохранить информацию в request attribute перед forward.
             request.setAttribute("errorString", errorString);
             request.setAttribute("user", user);
- 
+
             // Forward (перенаправить) к странице /WEB-INF/views/login.jsp
             RequestDispatcher dispatcher //
                     = this.getServletContext().getRequestDispatcher("/WEB-INF/views/loginView.jsp");
- 
+
             dispatcher.forward(request, response);
         }
         // В случае, если нет ошибки.
@@ -100,7 +131,7 @@ public class LoginServlet extends HttpServlet {
             System.out.println("Session User no problem!");
             HttpSession session = request.getSession();
             MyUtils.storeLoginedUser(session, user);
- 
+
             // Если пользователь выбирает функцию "Remember me".
             if (remember) {
                 MyUtils.storeUserCookie(response, user);
@@ -109,10 +140,10 @@ public class LoginServlet extends HttpServlet {
             else {
                 MyUtils.deleteUserCookie(response);
             }
- 
+
             // Redirect (Перенаправить) на страницу /userInfo.
             response.sendRedirect(request.getContextPath() + "/userInfo");
         }
     }
- 
+
 }

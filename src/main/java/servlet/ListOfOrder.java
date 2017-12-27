@@ -17,21 +17,37 @@ import beans.OrderObject;
 import beans.UserAccount;
 import utils.DBUtils;
 import utils.MyUtils;
-
+/**
+ * Класс сервлет для предоставления списка заказов для пользователей.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebServlet(urlPatterns = { "/orderList" })
 public class ListOfOrder extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private  String status;
+
+    /**
+     * Конструктор класса ListOfOrder с вызовом класса-родителя.
+     */
     public ListOfOrder() {
         super();
     }
-
+    /**
+     * Метод для перехвата HTTP запросов GET. Получает список из базы данных
+     * и перенаправляет на страницу для представления этого списка.
+     * Переменная статус отвечает за список отображаемых заказов.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Connection conn = MyUtils.getStoredConnection(request);
-        String statusOrder = status;
+
 
         UserAccount user  = MyUtils.getLoginedUser(session);
         // Если еще не вошел в систему (login).
@@ -65,11 +81,18 @@ public class ListOfOrder extends HttpServlet {
 
         // Forward к /WEB-INF/views/productListView.jsp
         RequestDispatcher dispatcher = request.getServletContext()
-                .getRequestDispatcher("/WEB-INF/views/orderList.jsp");
+                .getRequestDispatcher("/WEB-INF/views/orderList/orderList.jsp");
         System.out.println(list.size());
         dispatcher.forward(request, response);
     }
-
+    /**
+     * Метод для перехвата HTTP запросов POST. Ставит переменную статус из страницы к запросу.
+     * Переменная статус отвечает за список отображаемых заказов.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

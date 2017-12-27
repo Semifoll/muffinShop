@@ -17,23 +17,41 @@ import javax.servlet.http.HttpSession;
 import beans.UserAccount;
 import utils.DBUtils;
 import utils.MyUtils;
- 
+/**
+ * Класс служит для фильтрации потоков.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebFilter(filterName = "cookieFilter", urlPatterns = { "/*" })
 public class CookieFilter implements Filter {
- 
+    /** Конструктор класса CookieFiler
+     *
+     */
     public CookieFilter() {
     }
- 
+    /** Переопределение функции init для Filter с параметром:
+     * @param fConfig - конфигурация фильтра.
+     * @throws SQLException
+     */
     @Override
     public void init(FilterConfig fConfig) throws ServletException {
  
     }
- 
+    /** Переопределение функции destroy для Filter
+     */
     @Override
     public void destroy() {
  
     }
- 
+    /** Переопределение функции doFilter для Filter. Фактическое выполнение фильтрации потока запросов.
+     * Проверка на наличие куки-файлов. Параметры:
+     * @param request - запрос пришедший на сервлет.
+     * @param response - ответ отправляющий от сервлета.
+     * @param chain - цепь фильтров.
+     * @throws IOException
+     * @throws ServletException
+     *
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

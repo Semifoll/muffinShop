@@ -12,15 +12,28 @@ import javax.servlet.http.HttpSession;
  
 import beans.UserAccount;
 import utils.MyUtils;
- 
+/**
+ * Класс сервлет для представления информации о пользователе.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebServlet(urlPatterns = { "/userInfo" })
 public class UserInfoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
- 
+    /**
+     * Конструктор класса UserInfoServlet с вызовом класса-родителя.
+     */
     public UserInfoServlet() {
         super();
     }
- 
+    /**
+     * Метод для перехвата HTTP запросов GET. Направляет на страницу информации о пользователе.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -45,7 +58,13 @@ public class UserInfoServlet extends HttpServlet {
         dispatcher.forward(request, response);
  
     }
- 
+    /**
+     * Метод для перехвата HTTP запросов POST.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

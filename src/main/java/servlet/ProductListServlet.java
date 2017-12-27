@@ -17,15 +17,30 @@ import beans.Product;
 import beans.UserAccount;
 import utils.DBUtils;
 import utils.MyUtils;
- 
+/**
+ * Класс сервлет для представления списка продуктов.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ *
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebServlet(urlPatterns = { "/productList" })
 public class ProductListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
- 
+    /**
+     * Конструктор класса ProductListServlet с вызовом класса-родителя.
+     */
     public ProductListServlet() {
         super();
     }
- 
+    /**
+     * Метод для перехвата HTTP запросов GET. Получает список продуктов из базы данных.
+     * В зависимости от accessRights перенаправляет на соответствующую страницу.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -90,7 +105,13 @@ public class ProductListServlet extends HttpServlet {
     }
 
 
- 
+    /**
+     * Метод для перехвата HTTP запросов POST.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

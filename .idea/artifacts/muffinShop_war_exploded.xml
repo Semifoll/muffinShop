@@ -7,8 +7,8 @@
           <element id="module-output" name="muffinShop" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: com.oracle:ojdbc6:11.2.0.4" />
-          <element id="library" level="project" name="Maven: jstl:jstl:1.2" />
+          <element id="library" level="project" name="Maven: localRep:ojdbc6.jar:11.2.0.4" />
+          <element id="library" level="project" name="Maven: localRep:jstl-1.2.jar:1.2" />
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -14,16 +14,30 @@ import javax.servlet.http.HttpServletResponse;
 import beans.Product;
 import utils.DBUtils;
 import utils.MyUtils;
- 
+/**
+ * Класс сервлет для создания нового продукта.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebServlet(urlPatterns = { "/createProduct" })
 public class CreateProductServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
- 
+    /**
+     * Конструктор класса CreateProductServlet с вызовом класса-родителя.
+     */
     public CreateProductServlet() {
         super();
     }
- 
-    // Отобразить страницу создания продукта.
+
+
+    /**
+     * Метод для перехвата HTTP запросов GET. Отображает страницу создания продукта.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -35,6 +49,15 @@ public class CreateProductServlet extends HttpServlet {
  
     // Когда пользователь вводит информацию продукта, и нажимает Submit.
     // Этот метод будет вызван.
+
+    /**
+     * Метод для перехвата HTTP запросов GET. Создает новый продукт в базе данных.
+     * Данные берутся из формы со страницы.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

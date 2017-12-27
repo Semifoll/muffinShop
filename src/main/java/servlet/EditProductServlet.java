@@ -14,16 +14,32 @@ import javax.servlet.http.HttpServletResponse;
 import beans.Product;
 import utils.DBUtils;
 import utils.MyUtils;
- 
+/**
+ * Класс сервлет для изменения продукта из списка базы данных.
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebServlet(urlPatterns = { "/editProduct" })
 public class EditProductServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
- 
+    /**
+     * Конструктор класса EditProductServlet с вызовом класса-родителя.
+     */
     public EditProductServlet() {
         super();
     }
  
     // Отобразить страницу редактирования продукта.
+
+    /**
+     * Метод для перехвата HTTP запросов GET. Отображение страницы редактирования продукта.
+     * Если он существует.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -59,9 +75,15 @@ public class EditProductServlet extends HttpServlet {
         dispatcher.forward(request, response);
  
     }
- 
-    // После того, как пользователь отредактировал информацию продукта и нажал на Submit.
-    // Данный метод будет выполнен.
+
+    /**
+     * Метод для перехвата HTTP запросов POST. После заполнения и нажатия Submit.
+     * Делает обновление продукта в базе данных.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

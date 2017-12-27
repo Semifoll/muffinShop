@@ -17,24 +17,45 @@ import javax.servlet.http.HttpServletRequest;
  
 import conn.ConnectionUtils;
 import utils.MyUtils;
- 
+
+/**
+ * Класс служит для проверки запроса на наличие соответствующего сервлета.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
 @WebFilter(filterName = "jdbcFilter", urlPatterns = { "/*" })
 public class JDBCFilter implements Filter {
- 
+    /**
+     * Конструктор класса JDBCFilter с вызовом класса-родителя.
+     */
     public JDBCFilter() {
     }
- 
+
+    /**
+     * Перегрузка функции init для Filter
+     * @param fConfig
+     * @throws ServletException
+     */
     @Override
     public void init(FilterConfig fConfig) throws ServletException {
  
     }
- 
+
+    /**
+     * Перегрузка функции destroy для Filter
+     */
     @Override
     public void destroy() {
  
     }
  
     // Проверить является ли Servlet цель текущего request?
+
+    /**
+     * Функция для проверки запроса на возможность выполнения в перечне сервлетов.
+     * @param request
+     * @return
+     */
     private boolean needJDBC(HttpServletRequest request) {
         System.out.println("JDBC Filter");
         // 
@@ -67,7 +88,16 @@ public class JDBCFilter implements Filter {
         }
         return false;
     }
- 
+
+    /**
+     * Функция для фильтрования потока запросов для открытия подключений к базе данных.
+     * Настройка автокоммита(выключен). Выполнение подключения и запроса, закрытие подключения.
+     * @param request
+     * @param response
+     * @param chain
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

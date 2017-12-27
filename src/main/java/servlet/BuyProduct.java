@@ -1,33 +1,49 @@
 
 package servlet;
 
-        import java.io.IOException;
-        import java.sql.Connection;
-        import java.sql.SQLException;
-        import java.util.List;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
-        import javax.servlet.RequestDispatcher;
-        import javax.servlet.ServletException;
-        import javax.servlet.annotation.WebServlet;
-        import javax.servlet.http.HttpServlet;
-        import javax.servlet.http.HttpServletRequest;
-        import javax.servlet.http.HttpServletResponse;
-        import javax.servlet.http.HttpSession;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-        import beans.Product;
-        import beans.UserAccount;
-        import utils.DBUtils;
-        import utils.MyUtils;
+import beans.Product;
+import beans.UserAccount;
+import utils.DBUtils;
+import utils.MyUtils;
 
-@WebServlet(urlPatterns = { "/buyProduct" })
+/**
+ * Класс сервлет для добавления записи в БД (покупка товара).
+ * <b>serialVersionUID</b> - константа серийной версии UID.
+ * @version 1.0
+ * @autor Trusov Anton
+ */
+@WebServlet(urlPatterns = {"/buyProduct"})
 public class BuyProduct extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Конструктор класса BuyProduct с вызовом класса-родителя.
+     */
     public BuyProduct() {
         super();
     }
 
-    // Отобразить страницу редактирования продукта.
+    /**
+     * Метод для перехвата HTTP запросов GET. Делает запрос к базе данных
+     * для получения данных о наличии выбранного продукта. Добавление новой записи в заказы.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -40,11 +56,11 @@ public class BuyProduct extends HttpServlet {
         String errorString = null;
 
         HttpSession session = request.getSession();
-        UserAccount user  = MyUtils.getLoginedUser(session);
+        UserAccount user = MyUtils.getLoginedUser(session);
 
         try {
             product = DBUtils.findProduct(conn, code);
-            System.out.println("product "+ product.getName());
+            System.out.println("product " + product.getName());
         } catch (SQLException e) {
             e.printStackTrace();
             errorString = e.getMessage();
