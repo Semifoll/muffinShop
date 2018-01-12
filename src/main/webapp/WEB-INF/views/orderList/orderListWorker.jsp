@@ -26,7 +26,7 @@
                 <br>
                 <form name="statusform"
                       action="/orderListWorker"
-                      method="post">
+                      >
                     <select name="statusOrder">
                         <option selected value="Complete">Complete</option>
                         <option value="Delivered">Delivered</option>

@@ -22,7 +22,7 @@ import utils.MyUtils;
  * @version 1.0
  * @autor Trusov Anton
  */
-@WebFilter(filterName = "cookieFilter", urlPatterns = { "/*" })
+//@WebFilter(filterName = "cookieFilter", urlPatterns = { "/*" })
 public class CookieFilter implements Filter {
     /** Конструктор класса CookieFiler
      *
@@ -55,6 +55,7 @@ public class CookieFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        System.out.println("Cookie Filter");
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession session = req.getSession();
  

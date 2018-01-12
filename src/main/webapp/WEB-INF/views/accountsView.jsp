@@ -45,7 +45,7 @@
                 <br/>
                 <br/>
 
-                <form name="formChange" action="${pageContext.request.contextPath}/changeUserRole" method="post">
+                <form name="formChange" action="${pageContext.request.contextPath}/changeUserRole">
                     <select name="codUser">
                         <c:forEach items="${usersList}" var="user">
                             <option><c:out value="${user.cod}"/></option>

@@ -1,61 +1,50 @@
-package servlet;
+package comServlet;
 
+import utils.DBUtils;
+import utils.MyUtils;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
- 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
- 
-import utils.DBUtils;
-import utils.MyUtils;
 /**
- * Класс сервлет для удаления продукта.
- * <b>serialVersionUID</b> - константа серийной версии UID.
+ * Класс для удаления записи продукта из базы данных.
  * @version 1.0
  * @autor Trusov Anton
  */
-@WebServlet(urlPatterns = { "/deleteProduct" })
-public class DeleteProductServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+public class DeleteProduct implements Command {
     /**
-     * Конструктор класса DeleteProductServlet с вызовом класса-родителя.
-     */
-    public DeleteProductServlet() {
-        super();
-    }
-    /**
-     * Метод для перехвата HTTP запросов GET. Удаляет продукт из базы если таковой существует.
+     * Метод для удаления записи продукта из базы данных.
      * @param request
      * @param response
+     * @param context
      * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
- 
+
         String code = (String) request.getParameter("code");
- 
+
         String errorString = null;
- 
+
         try {
             DBUtils.deleteProduct(conn, code);
         } catch (SQLException e) {
             e.printStackTrace();
             errorString = e.getMessage();
-        } 
-         
+        }
+
         // Если происходит ошибка, forward (перенаправить) к странице оповещающей ошибку.
         if (errorString != null) {
             // Сохранить информацию в request attribute перед тем как forward к views.
             request.setAttribute("errorString", errorString);
-            // 
+            //
             RequestDispatcher dispatcher = request.getServletContext()
                     .getRequestDispatcher("/WEB-INF/views/deleteProductErrorView.jsp");
             dispatcher.forward(request, response);
@@ -65,20 +54,5 @@ public class DeleteProductServlet extends HttpServlet {
         else {
             response.sendRedirect(request.getContextPath() + "/productList");
         }
- 
     }
-
-    /**
-     * Метод для перехвата HTTP запросов GET.
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
-    }
- 
 }

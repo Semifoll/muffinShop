@@ -23,7 +23,7 @@ import utils.MyUtils;
  * @version 1.0
  * @autor Trusov Anton
  */
-@WebFilter(filterName = "jdbcFilter", urlPatterns = { "/*" })
+//@WebFilter(filterName = "jdbcFilter", urlPatterns = { "/*" })
 public class JDBCFilter implements Filter {
     /**
      * Конструктор класса JDBCFilter с вызовом класса-родителя.

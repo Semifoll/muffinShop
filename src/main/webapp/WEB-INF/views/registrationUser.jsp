@@ -22,7 +22,7 @@
             <div class="c_2 transp">
                 <h3>Write your :</h3><br/>
                 <p style="color: red;">${errorString}</p>
-                <form method="POST" action="${pageContext.request.contextPath}/addNewUserServlet">
+                <form action="${pageContext.request.contextPath}/addNewUser">
                     <table border="0">
                         <label for="uNickName">User nick name: </label>
                         <input type="text" id="uNickName" name="nickName"

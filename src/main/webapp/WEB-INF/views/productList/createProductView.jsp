@@ -23,7 +23,7 @@
 
                 <p style="color: red;">${errorString}</p>
 
-                <form method="POST" action="${pageContext.request.contextPath}/createProduct">
+                <form action="${pageContext.request.contextPath}/createProduct">
                     <table border="0">
                         <tr>
                             <td>Code</td>

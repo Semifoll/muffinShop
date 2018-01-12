@@ -25,7 +25,7 @@
                 <h4>${orderList[0].c} your orders:</h4> <br>
                 <form name="statusform"
                       action="/orderList"
-                      method="post">
+                      >
                     <select name="status">
                         <option selected value="Complete">Complete</option>
                         <option value="Delivered">Delivered</option>

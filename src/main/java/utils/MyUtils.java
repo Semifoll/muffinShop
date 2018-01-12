@@ -42,8 +42,7 @@ public class MyUtils {
      */
     // Получить объект Connection сохраненный в attribute в request.
     public static Connection getStoredConnection(ServletRequest request) {
-        Connection conn = (Connection) request.getAttribute(ATT_NAME_CONNECTION);
-        return conn;
+        return (Connection) request.getAttribute(ATT_NAME_CONNECTION);
     }
 
     /**
@@ -62,8 +61,7 @@ public class MyUtils {
      * @return - возращает информацию пользователя.
      */
     public static UserAccount getLoginedUser(HttpSession session) {
-        UserAccount loginedUser = (UserAccount) session.getAttribute("loginedUser");
-        return loginedUser;
+        return (UserAccount) session.getAttribute("loginedUser");
     }
 
     /**

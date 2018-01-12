@@ -25,7 +25,7 @@
                 <p style="color: red;">${errorString}</p>
 
                 <c:if test="${not empty product}">
-                    <form method="POST" action="${pageContext.request.contextPath}/editProduct">
+                    <form action="${pageContext.request.contextPath}/changeProduct">
                         <input type="hidden" name="code" value="${product.code}"/>
                         <table border="0">
                             <tr>

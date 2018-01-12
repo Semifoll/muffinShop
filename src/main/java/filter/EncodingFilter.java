@@ -16,7 +16,7 @@ import javax.servlet.annotation.WebFilter;
  * @version 1.0
  * @autor Trusov Anton
  */
-@WebFilter(filterName = "encodingFilter", urlPatterns = { "/*" })
+//@WebFilter(filterName = "encodingFilter", urlPatterns = { "/*" })
 public class EncodingFilter implements Filter {
   /**
    * Конструктор класса EncodingFilter.
@@ -50,8 +50,9 @@ public class EncodingFilter implements Filter {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
           throws IOException, ServletException {
+      System.out.println("Encoding Filter");
       request.setCharacterEncoding("UTF-8");
- 
+
       chain.doFilter(request, response);
   }
  

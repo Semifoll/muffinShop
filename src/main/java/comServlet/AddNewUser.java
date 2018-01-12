@@ -1,82 +1,37 @@
-package servlet;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+package comServlet;
 
 import beans.UserAccount;
 import utils.DBUtils;
 import utils.MyUtils;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 /**
- * Класс сервлет для страницы добавления нового вользователя в БД.
- * <b>serialVersionUID</b> - константа серийной версии UID.
+ * Класс для представления страницы регистрании нового пользователя.
  * @version 1.0
  * @autor Trusov Anton
  */
-@WebServlet(urlPatterns = {"/addNewUserServlet"})
-public class AddNewUserServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
+public class AddNewUser implements Command{
     /**
-     * Конструктор класса AddNewUserServlet с вызовом класса-родителя.
-     */
-    public AddNewUserServlet() {
-        super();
-    }
-
-    // Показать страницу Login.
-
-    /**
-     * Метод для перехвата HTTP запросов GET. Перенаправляет на страницу входа пользователя.
-     *
+     * Метод для добавления нового пользователя.
      * @param request
      * @param response
+     * @param context
      * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        // Forward (перенаправить) к странице /WEB-INF/views/loginView.jsp
-        // (Пользователь не может прямо получить доступ
-        // к страницам JSP расположенные в папке WEB-INF).
-        RequestDispatcher dispatcher //
-                = this.getServletContext().getRequestDispatcher("/WEB-INF/views/loginView.jsp");
-        System.out.println("Get Result dispacher!");
-        dispatcher.forward(request, response);
-
-    }
-
-    // Когда пользователь вводит userName & password, и нажимает Submit.
-    // Этот метод будет выполнен.
-
-    /**
-     * Метод для перехвата HTTP запросов POST. Делает запрос в базу данных о пользователе
-     * с данными введенными со страницы-отправителя. В случае если пользователь не найден
-     * отправляет на страницу-регистрацию. Если такой пользователь существует то отправляет
-     * на страницу "инфо пользователя"
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
         String nickName = request.getParameter("nickName");
         String firstName = request.getParameter("firstName");
@@ -136,7 +91,7 @@ public class AddNewUserServlet extends HttpServlet {
 
             // Forward (перенаправить) к странице /WEB-INF/views/login.jsp
             RequestDispatcher dispatcher //
-                    = this.getServletContext().getRequestDispatcher("/WEB-INF/views/registrationUser.jsp");
+                    = context.getRequestDispatcher("/WEB-INF/views/registrationUser.jsp");
 
             dispatcher.forward(request, response);
         }
@@ -180,5 +135,4 @@ public class AddNewUserServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/userInfo");
         }
     }
-
 }

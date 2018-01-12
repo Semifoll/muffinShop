@@ -22,7 +22,8 @@
                 <h3>Login Page</h3>
                 <p style="color: red;">${errorString}</p>
 
-                <form method="POST" action="${pageContext.request.contextPath}/login">
+                <form action="${pageContext.request.contextPath}/authorization"
+                        method="get">
                     <table border="0">
                         <tr>
                             <td>User nick name</td>

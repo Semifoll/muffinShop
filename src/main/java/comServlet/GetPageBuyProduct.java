@@ -1,52 +1,36 @@
-
-package servlet;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+package comServlet;
 
 import beans.Product;
 import beans.UserAccount;
 import utils.DBUtils;
 import utils.MyUtils;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 /**
- * Класс сервлет для добавления записи в БД (покупка товара).
- * <b>serialVersionUID</b> - константа серийной версии UID.
+ * Класс для перехода на страницу заказа продуктов.
  * @version 1.0
  * @autor Trusov Anton
  */
-@WebServlet(urlPatterns = {"/buyProduct"})
-public class BuyProduct extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
+public class GetPageBuyProduct implements Command {
     /**
-     * Конструктор класса BuyProduct с вызовом класса-родителя.
-     */
-    public BuyProduct() {
-        super();
-    }
-
-    /**
-     * Метод для перехвата HTTP запросов GET. Делает запрос к базе данных
-     * для получения данных о наличии выбранного продукта. Добавление новой записи в заказы.
+     * Метод для перехода на страницу заказа продуктов.
      * @param request
      * @param response
+     * @param context
      * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
 
         String code = (String) request.getParameter("code");
@@ -99,14 +83,5 @@ public class BuyProduct extends HttpServlet {
         RequestDispatcher dispatcher = request.getServletContext()
                 .getRequestDispatcher("/WEB-INF/views/productList/cProductList.jsp");
         dispatcher.forward(request, response);
-
     }
-
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
-    }
-
 }
