@@ -100,9 +100,6 @@ public class OracleConnUtils {
         String connectionURL = "jdbc:oracle:thin:@" + hostName + ":1521:" + sid;
         Locale.setDefault(Locale.ENGLISH);
         Connection conn = DriverManager.getConnection(connectionURL, userName, password);
-        System.out.println("||||||||||||||||||");
-        System.out.println("connect is success");
-        System.out.println("||||||||||||||||||");
         return conn;
     }
 }

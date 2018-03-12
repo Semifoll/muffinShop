@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="INFO">
+    <Properties>
+        <Property name ="basePath">C:\logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout   pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
+        </Console>
+        <File name="AddNewUserLog" fileName="${basePath}/logs/LogNewUser.log" immediateFlush="true" append="true">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+        </File>
+        <File name="AddNewProductLog" fileName="${basePath}/logs/LogNewProduct.log" immediateFlush="true" append="true">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+        </File>
+        <File name="ChangeUserRoleLog" fileName="${basePath}/logs/LogChangeRole.log" immediateFlush="true" append="true">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name ="NewUserLogger" level="ALL" additivity="true">
+            <AppenderRef ref="AddNewUserLog" />
+        </Logger>
+        <Logger name ="ChangeRoleLogger" level="ALL" additivity="true">
+            <AppenderRef ref="ChangeUserRoleLog" />
+        </Logger>
+        <Logger name ="NewProductLogger" level="ALL" additivity="true">
+            <AppenderRef ref="AddNewProductLog" />
+        </Logger>
+        <Root level="debug">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

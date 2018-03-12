@@ -1,5 +1,7 @@
 package comServlet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -28,6 +30,8 @@ public class ChangeOrderStatus implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
+        final Logger consolLogger = LogManager.getLogger();
+
         String codOrder = request.getParameter("codOrder");
         String newStatus = request.getParameter("statusOrder");
         int codOrderChange;
@@ -40,33 +44,27 @@ public class ChangeOrderStatus implements Command {
             //экстренный выход
             errorString = e.getMessage();
             request.setAttribute("errorString", errorString);
-            RequestDispatcher dispatcher = request.getServletContext()
-                    .getRequestDispatcher("/WEB-INF/views/errorPage.jsp");
-            dispatcher.forward(request, response);
+            InvokerServlet.commandsList.get("errorPage").execute(request,response,context);
             return;
         }
-        System.out.println(" codOrder: " + codOrder + " newStatus" + newStatus);
-
-
-        String statusString = null;
         try {
             DBUtils.updateOrderStatus(conn, codOrderChange, newStatus);
         } catch (SQLException e) {
             errorString = e.getMessage();
             request.setAttribute("errorString", errorString);
-            RequestDispatcher dispatcher = request.getServletContext()
-                    .getRequestDispatcher("/WEB-INF/views/errorPage.jsp");
-            dispatcher.forward(request, response);
+            InvokerServlet.commandsList.get("errorPage").execute(request,response,context);
+            return;
         }
         if (errorString == null) {
-            statusString = "Updating success";
-            System.out.println("Update sucess user with cod " + codOrderChange + " on " + newStatus);
+            consolLogger.info("Update sucess user with cod " + codOrderChange + " on " + newStatus);
             try {
                 DBUtils.commit(conn);
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                consolLogger.info(e);
             }
         }
-        response.sendRedirect(request.getContextPath() + "/orderListWorker");
+        InvokerServlet.commandsList.get("wOrders").execute(request,response,context);
+        //response.sendRedirect(request.getContextPath() + "/orderListWorker");
+
     }
 }

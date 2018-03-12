@@ -46,16 +46,34 @@
                             <td>${products.price}</td>
                             <td>${products.mass}</td>
                             <td>
-                                <a href="editProduct?code=${products.code}">Edit</a>
+                                <form method="post" name="editP"
+                                      action="/pack?code=${products.code}">
+                                    <input name="newPage"
+                                           type="submit"
+                                           value="Edit">
+                                </form>
+
                             </td>
                             <td>
-                                <a href="deleteProduct?code=${products.code}">Delete</a>
+                                <form method="post" name="deleteP"
+                                      action="/pack?code=${products.code}">
+                                    <input name="newPage"
+                                           type="submit"
+                                           value="Delete">
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>
                 </table>
                 <c:if test="${user.accessRights == 'Admin'}">
-                    <a href="createProduct">Create Product</a>
+                    <form method="post" name="deleteP"
+                          action="/pack?code=${products.code}">
+                        <input name="newPage"
+                               type="hidden"
+                               value="createProductPage">
+                        <input type="submit"
+                               value="Create product">
+                    </form>
                 </c:if>
             </div>
 

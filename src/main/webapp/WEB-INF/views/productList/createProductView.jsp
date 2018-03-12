@@ -23,7 +23,8 @@
 
                 <p style="color: red;">${errorString}</p>
 
-                <form action="${pageContext.request.contextPath}/createProduct">
+                <form action="${pageContext.request.contextPath}/pack"
+                      method="post">
                     <table border="0">
                         <tr>
                             <td>Code</td>
@@ -43,8 +44,8 @@
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <input type="submit" value="Submit"/>
-                                <a href="">Cancel</a>
+                                <input type="hidden" name="newPage" value="createProduct">
+                                <input type="submit" value="Create"/>
                             </td>
                         </tr>
                     </table>

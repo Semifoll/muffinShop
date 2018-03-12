@@ -1,5 +1,7 @@
 package comServlet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -29,6 +31,8 @@ public class ChangeUserRole implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
+        final Logger fileLogger = LogManager.getLogger("ChangeRoleLogger");
+        final Logger consolLogger = LogManager.getLogger();
         String codUserChangeString = request.getParameter("codUser");
         String codRoleString = request.getParameter("role");
         int codUserChange;
@@ -40,34 +44,38 @@ public class ChangeUserRole implements Command {
         } catch (Exception e) {
             //экстренный выход
             errorString = e.getMessage();
+            consolLogger.warn("Error with parse integer to str from change User role. ");
             request.setAttribute("errorString", errorString);
-            RequestDispatcher dispatcher = request.getServletContext()
-                    .getRequestDispatcher("/WEB-INF/views/accountsView.jsp");
-            dispatcher.forward(request, response);
+            InvokerServlet.commandsList.get("errorPage").execute(request,response,context);
             return;
         }
-        System.out.println(" cod user: " + codUserChangeString + " cod role" + codRoleString);
 
-
-        String statusString = null;
         try {
             DBUtils.updateUserRole(conn, codUserChange, codRole);
+            fileLogger.info(
+                    "Role update! cod user = " + codUserChangeString + ", new Role = " + codRoleString);
         } catch (SQLException e) {
             errorString = e.getMessage();
             request.setAttribute("errorString", errorString);
-            RequestDispatcher dispatcher = request.getServletContext()
-                    .getRequestDispatcher("/WEB-INF/views/errorPage.jsp");
-            dispatcher.forward(request, response);
+            InvokerServlet.commandsList.get("errorPage").execute(request,response,context);
+            return;
+            //RequestDispatcher dispatcher = request.getServletContext()
+            //        .getRequestDispatcher("/WEB-INF/views/errorPage.jsp");
+            //dispatcher.forward(request, response);
         }
         if (errorString == null) {
-            statusString = "Updating success";
-            System.out.println("Update sucess user with cod " + codUserChange);
+            consolLogger.info("Update sucess user with cod " + codUserChange);
             try {
                 DBUtils.commit(conn);
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                errorString = e.getMessage();
+                request.setAttribute("errorString", errorString);
+                InvokerServlet.commandsList.get("errorPage").execute(request,response,context);
+                return;
             }
         }
-        response.sendRedirect(request.getContextPath() + "/accountView");
+        //response.sendRedirect(request.getContextPath() + "/accountView");
+        InvokerServlet.commandsList.get("pageAccountView").execute(request,response,context);
+        return;
     }
 }

@@ -24,30 +24,31 @@
 
                 <p style="color: red;">${errorString}</p>
 
-                <c:if test="${not empty product}">
-                    <form action="${pageContext.request.contextPath}/changeProduct">
-                        <input type="hidden" name="code" value="${product.code}"/>
+                <c:if test="${not empty code}">
+                    <form action="${pageContext.request.contextPath}/pack"
+                          method="post">
+                        <input type="hidden" name="code" value="${code}"/>
                         <table border="0">
                             <tr>
                                 <td>Code</td>
-                                <td style="color:red;">${product.code}</td>
+                                <td style="color:red;">${code}</td>
                             </tr>
                             <tr>
                                 <td>Name</td>
-                                <td><input type="text" name="name" value="${product.name}"/></td>
+                                <td><input type="text" name="name" value="${name}"/></td>
                             </tr>
                             <tr>
                                 <td>Price</td>
-                                <td><input type="text" name="price" value="${product.price}"/></td>
+                                <td><input type="text" name="price" value="${price}"/></td>
                             </tr>
                             <tr>
                                 <td>Mass</td>
-                                <td><input type="text" name="mass" value="${product.mass}"/></td>
+                                <td><input type="text" name="mass" value="${mass}"/></td>
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <input type="submit" value="Submit"/>
-                                    <a href="${pageContext.request.contextPath}/productList">Cancel</a>
+                                    <input type="hidden" name="newPage" value="changeProduct">
+                                    <input type="submit" value="Create"/>
                                 </td>
                             </tr>
                         </table>

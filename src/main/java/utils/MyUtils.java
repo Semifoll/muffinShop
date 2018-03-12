@@ -70,7 +70,6 @@ public class MyUtils {
      * @param user - данные о пользователе.
      */
     public static void storeUserCookie(HttpServletResponse response, UserAccount user) {
-        System.out.println("Store user cookie");
         Cookie cookieUserName = new Cookie(ATT_NAME_USER_NAME, user.getNickName());
         // 1 день (Конвертированный в секунды)
         cookieUserName.setMaxAge(24 * 60 * 60);

@@ -55,7 +55,6 @@ public class CookieFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        System.out.println("Cookie Filter");
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession session = req.getSession();
  

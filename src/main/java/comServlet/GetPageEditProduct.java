@@ -1,6 +1,8 @@
 package comServlet;
 
 import beans.Product;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -29,6 +31,7 @@ public class GetPageEditProduct implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
+        final Logger consolLogger = LogManager.getLogger();
 
         String code = (String) request.getParameter("cod_product");
 
@@ -41,13 +44,15 @@ public class GetPageEditProduct implements Command {
         } catch (SQLException e) {
             e.printStackTrace();
             errorString = e.getMessage();
+            consolLogger.error("Error. Problem with find product cod: "+ code);
         }
 
         // Ошибки не имеются.
         // Продукт не существует для редактирования (edit).
         // Redirect sang trang danh sách sản phẩm.
         if (errorString != null && product == null) {
-            response.sendRedirect(request.getServletPath() + "/productList");
+            //response.sendRedirect(request.getServletPath() + "/productList");
+            InvokerServlet.commandsList.get("pageAdminProductList").execute(request,response,context);
             return;
         }
 
@@ -58,5 +63,6 @@ public class GetPageEditProduct implements Command {
         RequestDispatcher dispatcher = request.getServletContext()
                 .getRequestDispatcher("/WEB-INF/views/editProductView.jsp");
         dispatcher.forward(request, response);
+
     }
 }

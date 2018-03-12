@@ -4,5 +4,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <div class="menuLine">
-	<div class="mL">menu line</div>
+	<div class="mL"></div>
 </div>

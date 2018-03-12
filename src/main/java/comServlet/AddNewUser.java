@@ -1,6 +1,9 @@
 package comServlet;
 
 import beans.UserAccount;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -16,6 +19,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+
 /**
  * Класс для представления страницы регистрании нового пользователя.
  * @version 1.0
@@ -32,6 +37,9 @@ public class AddNewUser implements Command{
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
+
+        final Logger fileLogger = LogManager.getLogger("NewUserLogger");
+        final Logger consolLogger = LogManager.getLogger();
         Connection conn = MyUtils.getStoredConnection(request);
         String nickName = request.getParameter("nickName");
         String firstName = request.getParameter("firstName");
@@ -40,8 +48,6 @@ public class AddNewUser implements Command{
 
         String[] birthDate = request.getParameterValues("birthDate");
         String phoneNum = request.getParameter("phoneNum");
-
-        System.out.println(password);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -64,20 +70,17 @@ public class AddNewUser implements Command{
             hasError = true;
             errorString = "Not all line valid!" + nickName + password + firstName + secondName + phoneNum;
         } else {//данные все заполнены.
-            System.out.println("StartConnect and search User!");
-
             try {
                 // Найти user в DB.
                 user = DBUtils.findUser(conn, nickName);
 
                 if (user != null) {//пользователь найден запись не возможна
                     hasError = true;
-                    System.out.println("Find same User!");
                     errorString = "User nick name or password invalid";
+                    consolLogger.info(errorString);
                 }
             } catch (SQLException e) {
                 hasError = false;
-                System.out.println("Recording is free");
             }
         }
         // В случае, если есть ошибка,
@@ -86,7 +89,6 @@ public class AddNewUser implements Command{
             // Сохранить информацию в request attribute перед forward.
             request.setAttribute("errorString", errorString);
             SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yy");
-            System.out.println("Have some troble! ");
             errorString = errorString + birthDate + " " + date.toString() + " ";
 
             // Forward (перенаправить) к странице /WEB-INF/views/login.jsp
@@ -111,28 +113,35 @@ public class AddNewUser implements Command{
             } catch (ParseException e) {
                 e.printStackTrace();
                 dat = new Date();
-                System.out.println("Date dont parse in format! " + birthDate[0]);
+                consolLogger.info("Date don't parse in format! " + birthDate[0]);
             }
 
             user.setBirthDate(dat);
             user.setPassword(password);
             user.setAccessRights("Client");
             user.setCod("0");
-            System.out.println("Create user not porblemo!");
-
-
             try {
                 DBUtils.addNewUser(conn, user);
+                fileLogger.info(
+                        " !!Add new user in base: first name " + user.getFirstName() + "," +
+                        " second name " + user.getSecondName() + "," +
+                        " nick name " + user.getNickName()+ ","+
+                        " access rights "+ user.getAccessRights() + "," +
+                        " phone number " + user.getPhoneNumber() + "," +
+                        " birth date "+ user.getBirthDate().toString() + "");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            HttpSession session = request.getSession();
-            MyUtils.storeLoginedUser(session, user);
+
+            MyUtils.storeLoginedUser(request.getSession(), user);
 
             // Если пользователь выбирает функцию "Remember me".
             MyUtils.deleteUserCookie(response);
+
             // Redirect (Перенаправить) на страницу /userInfo.
-            response.sendRedirect(request.getContextPath() + "/userInfo");
+            //response.sendRedirect(request.getContextPath() + "/userInfo");
         }
+        InvokerServlet.commandsList.get("userInfo").execute(request,response,context);
+
     }
 }

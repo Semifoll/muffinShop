@@ -50,7 +50,6 @@ public class EncodingFilter implements Filter {
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
           throws IOException, ServletException {
-      System.out.println("Encoding Filter");
       request.setCharacterEncoding("UTF-8");
 
       chain.doFilter(request, response);

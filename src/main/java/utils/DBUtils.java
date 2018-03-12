@@ -139,7 +139,6 @@ public class DBUtils {
 		Date curDate = new Date();
 		java.sql.Date sqlDate = new java.sql.Date(curDate.getTime());
 		pstm.setDate(7,sqlDate);
-		System.out.println(sqlDate.toString());
 
 		pstm.executeUpdate();
 	}
@@ -165,8 +164,6 @@ public class DBUtils {
 
 		java.sql.Date sqlDate = new java.sql.Date(dat.getTime());
 
-		System.out.println(sqlDate.toString());
-
 		pstm.setDate(5, sqlDate);
 		pstm.setString(6,newUser.getPhoneNumber());
 		pstm.setString(7,newUser.getPassword());
@@ -183,7 +180,6 @@ public class DBUtils {
 		}
 		pstm.setInt(8,aRights);
     	//SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yy");
-		System.out.println(sqlDate.toString());
 		//pstm.setString(5, "01.10.00");
 		pstm.executeUpdate();
 	}
@@ -205,9 +201,7 @@ public class DBUtils {
 		pstm.setString(1, nickName);
 		pstm.setString(2, password);
 		ResultSet rs = pstm.executeQuery();
-		System.out.println("Get result set!");
 		if (rs.next()) {
-			System.out.println("Start!");
 			UserAccount user = new UserAccount();
 			user.setCod(rs.getString("cod_user").toString());
 			user.setNickName(nickName);
@@ -219,7 +213,6 @@ public class DBUtils {
 			user.setAccessRights(rs.getString("name"));
 			return user;
 		}
-		System.out.println("nothing!");
 		return null;
 	}
 
@@ -395,20 +388,23 @@ public class DBUtils {
 	}
 
 	/**
-	 * Метод для обновления данных о продукте в БД в следствии изменения.
-	 * @param conn - сслыка на подключение к БД.
-	 * @param product - продукт с новыми данными(код тот же).
+	 * Метод для обновления существующего продукта в базе данных.
+	 * @param conn - подключение к БД.
+	 * @param code - код продукта.
+	 * @param name - имя продукта.
+	 * @param price - цена продукта.
+	 * @param mass - масса продукта.
 	 * @throws SQLException
 	 */
-	public static void updateProduct(Connection conn, Product product) throws SQLException {
+	public static void updateProduct(Connection conn, String code, String name, float price, float mass) throws SQLException {
 		String sql = "Update products set name_product = ?, price = ?, average_mass = ? where cod_product = ?";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 
-		pstm.setString(1, product.getName());
-		pstm.setFloat(2, product.getPrice());
-		pstm.setFloat(3, product.getMass());
-		pstm.setString(4, product.getCode());
+		pstm.setString(1, name);
+		pstm.setFloat(2, price);
+		pstm.setFloat(3, mass);
+		pstm.setString(4, code);
 		pstm.executeUpdate();
 	}
 
@@ -480,12 +476,13 @@ public class DBUtils {
 	public static List<OrderObject> listOrder(Connection conn, UserAccount user, String status)throws SQLException{
 		if(user == null){
 			return null;
-		}//сделать новый объект для заказ который наследуется от продукта.
-		// потому что нам нужно как минимум будет представлять все заказы. и
-		// + нам нужно будет знать код заказа.
-
-		String sql = "Select b.cod_order, a.cod_product, a.name_product, a.price, a.average_mass, b.status_order, b.hour, b.min, b.date_time, c.cod_user, c.nick_name from products a, orders b "+
-				"where b.users_cod_user = ? and b.status_order = ? and a.cod_product = b.products_cod_product ";
+		}
+		String sql = "Select b.cod_order, a.cod_product, a.name_product, a.price, a.average_mass, " +
+				"b.status_order, b.hour, b.min, b.date_time, c.cod_user, c.nick_name " +
+				"from products a, orders b, users c "+
+				"where b.users_cod_user = ? and b.status_order = ? " +
+				"and a.cod_product = b.products_cod_product " +
+				"and c.cod_user = b.users_cod_user ";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);
 
@@ -509,7 +506,9 @@ public class DBUtils {
 	 */
 	public static List<OrderObject> listOrder(Connection conn)throws SQLException{
 
-		String sql = "Select b.cod_order, a.cod_product, a.name_product, a.price, a.average_mass, b.status_order, b.hour, b.min, b.date_time, c.cod_user, c.nick_name from products a, orders b, users c "+
+		String sql = "Select b.cod_order, a.cod_product, a.name_product, a.price, a.average_mass, " +
+				"b.status_order, b.hour, b.min, b.date_time, c.cod_user, c.nick_name " +
+				"from products a, orders b, users c "+
 				"where a.cod_product = b.products_cod_product and c.cod_user = b.users_cod_user ";
 
 		PreparedStatement pstm = conn.prepareStatement(sql);

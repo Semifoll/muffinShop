@@ -2,6 +2,8 @@ package comServlet;
 
 import beans.OrderObject;
 import beans.UserAccount;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -31,25 +33,36 @@ public class GetPageOrders implements Command {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+
         Connection conn = MyUtils.getStoredConnection(request);
+        final Logger consolLogger = LogManager.getLogger();
 
-
-        UserAccount user  = MyUtils.getLoginedUser(session);
+        UserAccount user  = MyUtils.getLoginedUser(request.getSession());
         // Если еще не вошел в систему (login).
         if (user == null) {
             // Redirect (Перенаправить) к странице login.
-            response.sendRedirect(request.getContextPath() + "/login");
+            //response.sendRedirect(request.getContextPath() + "/login");
+            InvokerServlet.commandsList.get("loginPage").execute(request,response,context);
             return;
         }
         //
+        //Перенаправление на страницу работы с заказами.
+        // Проверить, вошел ли пользователь в систему (login) или нет.
 
+        // Если еще не вошел в систему (login).
+        if (user.getAccessRights().equals("Admin")||
+                user.getAccessRights().equals("Worker")) {
+            //Redirect (Перенаправить) к странице wOrders
+            InvokerServlet.commandsList.get("wOrders").execute(request,response,context);
+            return;
+        }
+        //
 
         String errorString = null;
         List<OrderObject> list = null;
         String status;
         try {
-            status = request.getAttribute("status").toString();
+                status = request.getParameter("status").toString();
         } catch (Exception e) {
             status = "Complete";
         }
@@ -57,18 +70,19 @@ public class GetPageOrders implements Command {
             list = DBUtils.listOrder(conn,user,status);
         } catch (SQLException e) {
             e.printStackTrace();
+            consolLogger.error("Error. Problem with listOrder from user:" + user.getCod()+" and status:"+status);
             errorString = e.getMessage();
 
         }
-        System.out.println("Get List of order success!");
         // Сохранить информацию в request attribute перед тем как forward к views.
         request.setAttribute("errorString", errorString);
         request.setAttribute("orderList", list);
+        request.setAttribute("userNickName", user.getNickName());
 
         // Forward к /WEB-INF/views/productListView.jsp
         RequestDispatcher dispatcher = request.getServletContext()
                 .getRequestDispatcher("/WEB-INF/views/orderList/orderList.jsp");
-        System.out.println(list.size());
         dispatcher.forward(request, response);
+
     }
 }

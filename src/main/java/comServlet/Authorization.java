@@ -1,6 +1,8 @@
 package comServlet;
 
 import beans.UserAccount;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -30,6 +32,8 @@ public class Authorization implements Command {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
+        final Logger consolLogger = LogManager.getLogger();
+
         String nickName = request.getParameter("nickName");
         String password = request.getParameter("password");
         String rememberMeStr = request.getParameter("rememberMe");
@@ -44,12 +48,10 @@ public class Authorization implements Command {
             hasError = true;
             errorString = "Required nick name and password!";
         } else {
-            System.out.println("StartConnect User!");
             Connection conn = MyUtils.getStoredConnection(request);
             try {
                 // Найти user в DB.
                 user = DBUtils.findUser(conn, nickName, password);
-                System.out.println("Find User!");
                 if (user == null) {
                     hasError = true;
                     errorString = "User Name or password invalid";
@@ -74,14 +76,13 @@ public class Authorization implements Command {
             // Forward (перенаправить) к странице /WEB-INF/views/login.jsp
             RequestDispatcher dispatcher //
                     = context.getRequestDispatcher("/WEB-INF/views/loginView.jsp");
-
             dispatcher.forward(request, response);
         }
         // В случае, если нет ошибки.
         // Сохранить информацию пользователя в Session.
         // И перенаправить к странице userInfo.
         else {
-            System.out.println("Session User no problem!");
+            consolLogger.info("Autorization user " + user.getCod());
             HttpSession session = request.getSession();
             MyUtils.storeLoginedUser(session, user);
 
@@ -95,7 +96,8 @@ public class Authorization implements Command {
             }
 
             // Redirect (Перенаправить) на страницу /userInfo.
-            response.sendRedirect(request.getContextPath() + "/userInfo");
+            InvokerServlet.commandsList.get("userInfo").execute(request,response,context);
         }
+
     }
 }

@@ -1,6 +1,8 @@
 package comServlet;
 
 import beans.Product;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -29,53 +31,59 @@ public class CreateProduct implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
+        final Logger fileLogger = LogManager.getLogger("NewProductLogger");
+        final Logger consolLogger = LogManager.getLogger();
 
-        String code = (String) request.getParameter("cod_priduct");
-        String name = (String) request.getParameter("name_product");
+        String code = (String) request.getParameter("code");
+        String name = (String) request.getParameter("name");
         String priceStr = (String) request.getParameter("price");
-        String massStr = (String) request.getParameter("average_mass");
+        String massStr = (String) request.getParameter("mass");
         float price = 0;
         float mass = 0;
         try {
             price = Float.parseFloat(priceStr);
             mass = Float.parseFloat(massStr);
         } catch (Exception e) {
+            request.setAttribute("errorString", e.getMessage());
+            consolLogger.warn("Error with parse integer to str from create product. ");
+            InvokerServlet.commandsList.get("errorPage").execute(request,response,context);
+            return;
         }
-        Product product = new Product(code, name, price, mass);
-
-        String errorString = null;
-
-        // Кодом продукта является строка [a-zA-Z_0-9]
-        // Имеет минимум 1 символ.
-        String regex = "\\w+";
-
-        if (code == null || !code.matches(regex)) {
-            errorString = "Product Code invalid!";
-        }
-
-        if (errorString == null) {
-            try {
-                DBUtils.insertProduct(conn, product);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                errorString = e.getMessage();
+        try{
+            Product product = DBUtils.findProduct(conn,code);
+            if(product != null){//уже есть такой.
+                fileLogger.info(
+                        " Warning! You change an existing product!! cod = "+ product.getCode());
+                request.setAttribute("errorString", "Warning! You change an existing product!!");
+                request.setAttribute("product", product);
+                RequestDispatcher dispatcher = request.getServletContext()
+                        .getRequestDispatcher("/WEB-INF/views/editProductView.jsp");
+                dispatcher.forward(request, response);
+                return;
             }
-        }
-
-        // Сохранить информацию в request attribute перед тем как forward к views.
-        request.setAttribute("errorString", errorString);
-        request.setAttribute("product", product);
-
-        // Если имеется ошибка forward (перенаправления) к странице 'edit'.
-        if (errorString != null) {
-            RequestDispatcher dispatcher = request.getServletContext()
-                    .getRequestDispatcher("/WEB-INF/views/createProductView.jsp");
-            dispatcher.forward(request, response);
-        }
-        // Если все хорошо.
-        // Redirect (перенаправить) к странице со списком продуктов.
-        else {
-            response.sendRedirect(request.getContextPath() + "/productList");
+            product = new Product(code,name,price,mass);
+            String errorString = null;
+            // Кодом продукта является строка [a-zA-Z_0-9]
+            // Имеет минимум 1 символ.
+            String regex = "\\w+";
+            if (code == null || !code.matches(regex)) {
+                consolLogger.warn("Error. Product Code invalid! ");
+                request.setAttribute("errorString", "Product Code invalid!");
+                InvokerServlet.commandsList.get("createProductPage").execute(request,response,context);
+                return;
+            }
+            DBUtils.insertProduct(conn, product);
+            fileLogger.info(
+                    " Add new Product: cod = "+ product.getCode()+", " +
+                            "name = " + product.getName()+", mass = "+ product.getMass()+", " +
+                            "price = " + product.getPrice());
+            InvokerServlet.commandsList.get("pageAdminProductList").execute(request,response,context);
+            return;
+        }catch (SQLException e){
+            request.setAttribute("errorString", e.getMessage());
+            consolLogger.warn("Error. Insert new product with error.");
+            InvokerServlet.commandsList.get("errorPage").execute(request,response,context);
+            return;
         }
     }
 }

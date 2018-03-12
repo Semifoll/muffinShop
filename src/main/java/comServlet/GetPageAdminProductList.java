@@ -18,11 +18,11 @@ import java.util.List;
 
 public class GetPageAdminProductList implements Command {
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context)
+            throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
 
-        HttpSession session = request.getSession();
-        UserAccount curUser = MyUtils.getLoginedUser(session);
+        UserAccount curUser = MyUtils.getLoginedUser(request.getSession());
 
 
         String errorString = null;
@@ -45,5 +45,6 @@ public class GetPageAdminProductList implements Command {
                 .getRequestDispatcher("/WEB-INF/views/productList/aProductListView.jsp");
         System.out.println(list.size());
         dispatcher.forward(request, response);
+
     }
 }

@@ -39,17 +39,35 @@
                             <td>${products.price}</td>
                             <td>${products.mass}</td>
                             <td>
-                                <a href="buyProduct?code=${products.code}">Buy</a>
-
-
+                                <form method="post" name="deleteP"
+                                      action="/pack?code=${products.code}">
+                                    <input name="newPage"
+                                           type="hidden"
+                                           value="buyProduct">
+                                    <input type="submit"
+                                           value="Buy product">
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>
                 </table>
+                <form method="post" name="deleteP"
+                      action="/pack">
+                    <input name="newPage"
+                           type="hidden"
+                           value="clientOrdersPage">
+                    See your
+                    <input type="submit"
+                           value="Orders">
+                </form>
+            </div>
 
-                <a href="/orderList">See your order list</a>
+            <div class="c_3 transp">CONTENT3
 
+            </div>
+        </div>
+    </div>
                 <jsp:include page="../_footer.jsp"></jsp:include>
-
+</div>
 </body>
 </html>

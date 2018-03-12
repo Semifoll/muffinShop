@@ -26,16 +26,15 @@ public class GetPageUserInfo implements Command {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
-        HttpSession session = request.getSession();
 
         // Проверить, вошел ли пользователь в систему (login) или нет.
-        UserAccount loginedUser = MyUtils.getLoginedUser(session);
+        UserAccount loginedUser = MyUtils.getLoginedUser(request.getSession());
 
         // Если еще не вошел в систему (login).
         if (loginedUser == null) {
             // Redirect (Перенаправить) к странице login.
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
+            //response.sendRedirect(request.getContextPath() + "/login");;
+            InvokerServlet.commandsList.get("loginPage").execute(request,response,context);
         }
         // Сохранить информацию в request attribute перед тем как forward (перенаправить).
         request.setAttribute("user", loginedUser);
@@ -45,5 +44,6 @@ public class GetPageUserInfo implements Command {
         RequestDispatcher dispatcher //
                 = context.getRequestDispatcher("/WEB-INF/views/userInfoView.jsp");
         dispatcher.forward(request, response);
+
     }
 }

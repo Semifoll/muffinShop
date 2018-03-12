@@ -2,6 +2,8 @@ package comServlet;
 
 import beans.Product;
 import beans.UserAccount;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -20,7 +22,7 @@ import java.util.List;
  * @version 1.0
  * @autor Trusov Anton
  */
-public class GetPageBuyProduct implements Command {
+public class BuyProduct implements Command {
     /**
      * Метод для перехода на страницу заказа продуктов.
      * @param request
@@ -32,6 +34,7 @@ public class GetPageBuyProduct implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
+        final Logger consolLogger = LogManager.getLogger();
 
         String code = (String) request.getParameter("code");
 
@@ -39,49 +42,47 @@ public class GetPageBuyProduct implements Command {
 
         String errorString = null;
 
-        HttpSession session = request.getSession();
-        UserAccount user = MyUtils.getLoginedUser(session);
+        UserAccount user = MyUtils.getLoginedUser(request.getSession());
 
         try {
             product = DBUtils.findProduct(conn, code);
-            System.out.println("product " + product.getName());
         } catch (SQLException e) {
-            e.printStackTrace();
             errorString = e.getMessage();
-            System.out.println("product cod not found");
+
+            consolLogger.info("Product cod not found");
             request.setAttribute("errorString", errorString);
-            response.sendRedirect(request.getServletPath() + "/cProductList");
-            return;
+            //response.sendRedirect(request.getServletPath() + "/cProductList");
+            InvokerServlet.commandsList.get("ourProductPage").execute(request,response,context);
         }
-        String resultString = " ";
+        String resultString;
         try {
             DBUtils.buyProduct(conn, product, user);
-            System.out.println();
+            consolLogger.info("Product buy product cod = " + product.getCode());
             resultString = "Product add in your order list.";
         } catch (SQLException e) {
-            e.printStackTrace();
-            resultString = e.getMessage();
+            errorString = e.getMessage();
+            request.setAttribute("errorString", errorString);
+            consolLogger.info(errorString);
+            InvokerServlet.commandsList.get("ourProductPage").execute(request,response,context);
+            return;
         }
-
 
         List<Product> list = null;
         try {
             list = DBUtils.queryProduct(conn);
         } catch (SQLException e) {
-            e.printStackTrace();
             errorString = e.getMessage();
         }
-        System.out.println("Get List of product success!");
         // Сохранить информацию в request attribute перед тем как forward к views.
-
         request.setAttribute("errorString", errorString);
 
         request.setAttribute("productList", list);
         request.setAttribute("resultString", resultString);
+        InvokerServlet.commandsList.get("ourProductPage").execute(request,response,context);
 
         //response.sendRedirect(request.getContextPath() + "/productList");
-        RequestDispatcher dispatcher = request.getServletContext()
-                .getRequestDispatcher("/WEB-INF/views/productList/cProductList.jsp");
-        dispatcher.forward(request, response);
+        //RequestDispatcher dispatcher = request.getServletContext()
+        //        .getRequestDispatcher("/WEB-INF/views/productList/cProductList.jsp");
+        //dispatcher.forward(request, response);
     }
 }

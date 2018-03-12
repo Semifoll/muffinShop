@@ -22,8 +22,9 @@ public class GetPageHome implements Command {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
-        RequestDispatcher dispatcher = context.getRequestDispatcher("/WEB-INF/views/homeView.jsp");
-
+        RequestDispatcher dispatcher = request.getServletContext()
+                .getRequestDispatcher("/WEB-INF/views/homeView.jsp");
         dispatcher.forward(request, response);
+        return;
     }
 }

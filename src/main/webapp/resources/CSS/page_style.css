@@ -24,8 +24,10 @@
 .logo{
 	background-image: url(Image/logotip.png);
 	background-size: cover;
-	min-height: 5%;
-	min-width: 25%;
+	max-height: 45px;
+	min-height: 4%;
+	min-width: 16%;
+	max-width: 288px;
 	float: left;
 }
 .logo_empty{
@@ -35,7 +37,6 @@
 }
 .h_1{	
 	min-height: 49px;
-	
 }
 .wrapper{
 	background-image: url(Image/fon_2.jpg);

@@ -2,6 +2,8 @@ package comServlet;
 
 import beans.Product;
 import beans.UserAccount;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -32,8 +34,7 @@ public class GetPageProducts implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
-        HttpSession session = request.getSession();
-
+        final Logger consolLogger = LogManager.getLogger();
 
         RequestDispatcher dispatcher;
 
@@ -44,15 +45,15 @@ public class GetPageProducts implements Command {
         } catch (SQLException e) {
             e.printStackTrace();
             errorString = e.getMessage();
+            consolLogger.error("Error. Problem with query product in page product. ");
         }
-        System.out.println("Get List of product success!");
         // Сохранить информацию в request attribute перед тем как forward к views.
 
         request.setAttribute("errorString", errorString);
 
         request.setAttribute("productList", list);
 
-        UserAccount curUser = MyUtils.getLoginedUser(session);
+        UserAccount curUser = MyUtils.getLoginedUser(request.getSession());
         String accessRights;
 
         if(curUser == null){
@@ -61,33 +62,37 @@ public class GetPageProducts implements Command {
         }else{
             accessRights = curUser.getAccessRights();
         }
-
+        request.setAttribute("user", curUser);
         switch (accessRights) {
             case "Admin":
                 //go to aProductList;
                 dispatcher = request.getServletContext()
                         .getRequestDispatcher("/WEB-INF/views/productList/aProductList.jsp");
+
                 break;
             case "Worker":
                 //go to wProductList;
                 dispatcher = request.getServletContext()
                         .getRequestDispatcher("/WEB-INF/views/productList/aProductList.jsp");
+
                 break;
             case "Client":
                 // go to cProductList;
                 dispatcher = request.getServletContext()
                         .getRequestDispatcher("/WEB-INF/views/productList/cProductList.jsp");
+
                 break;
             default:
                 //go to def product list not logged;
                 dispatcher = request.getServletContext()
                         .getRequestDispatcher("/WEB-INF/views/productList/productListView.jsp");
+
                 break;
         }
         // Forward к /WEB-INF/views/productListView.jsp
         // Сохранить информацию в request attribute перед тем как forward (перенаправить).
         request.setAttribute("user", curUser);
-        System.out.println(list.size());
         dispatcher.forward(request, response);
+
     }
 }

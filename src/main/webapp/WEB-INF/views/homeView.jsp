@@ -22,7 +22,7 @@
             <jsp:include page="_menu_page.jsp"></jsp:include>
 
             <div class="c_2 transp">
-                Приветствуем в нашем магазине
+                Welcome to our magazine.<br/>
             </div>
 
             <div class="c_3 transp">CONTENT3

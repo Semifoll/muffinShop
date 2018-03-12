@@ -22,8 +22,11 @@ public class GetPageInfo implements Command {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
-        RequestDispatcher dispatcher = context.getRequestDispatcher("/WEB-INF/views/infoPage.jsp");
 
+
+        RequestDispatcher dispatcher = request.getServletContext()
+                .getRequestDispatcher("/WEB-INF/views/infoPage.jsp");
         dispatcher.forward(request, response);
+        return;
     }
 }

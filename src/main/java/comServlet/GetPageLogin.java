@@ -1,6 +1,8 @@
 package comServlet;
 
 import beans.UserAccount;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.MyUtils;
 
 import javax.servlet.RequestDispatcher;
@@ -26,23 +28,27 @@ public class GetPageLogin implements Command {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        final Logger consolLogger = LogManager.getLogger();
 
         // Проверить, вошел ли пользователь в систему (login) или нет.
-        UserAccount loginedUser = MyUtils.getLoginedUser(session);
+        UserAccount loginedUser = MyUtils.getLoginedUser(request.getSession());
 
         // Если еще не вошел в систему (login).
         if (loginedUser != null) {
-            // Redirect (Перенаправить) к странице login.
-            response.sendRedirect(request.getContextPath() + "/userInfo");
+            //Redirect (Перенаправить) к странице login.
+            //response.sendRedirect(request.getContextPath() + "/userInfo");
+            InvokerServlet.commandsList.get("userInfo").execute(request,response,context);
             return;
         }
         // Forward (перенаправить) к странице /WEB-INF/views/loginView.jsp
         // (Пользователь не может прямо получить доступ
         // к страницам JSP расположенные в папке WEB-INF).
+
+        consolLogger.warn("Invalid login or password. Try to login failed.");
+
         RequestDispatcher dispatcher //
                 = context.getRequestDispatcher("/WEB-INF/views/loginView.jsp");
-        System.out.println("Get Result dispacher!");
         dispatcher.forward(request, response);
+
     }
 }

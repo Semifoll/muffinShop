@@ -2,6 +2,8 @@ package comServlet;
 
 import beans.OrderObject;
 import beans.UserAccount;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -31,20 +33,23 @@ public class GetPageOrdersWorker implements Command {
      */
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+
+        final Logger consolLogger = LogManager.getLogger();
         Connection conn = MyUtils.getStoredConnection(request);
 
-        UserAccount user = MyUtils.getLoginedUser(session);
+        UserAccount user = MyUtils.getLoginedUser(request.getSession());
         // Если еще не вошел в систему (login).
         if (user == null) {
             // Redirect (Перенаправить) к странице login.
-            response.sendRedirect(request.getContextPath() + "/login");
+            //response.sendRedirect(request.getContextPath() + "/login");
+            InvokerServlet.commandsList.get("loginPage").execute(request,response,context);
             return;
         }
         //
         if (!(user.getAccessRights().equals("Admin"))) {
             if (!(user.getAccessRights().equals("Worker"))) {
-                response.sendRedirect(request.getContextPath() + "/orderList");
+                //response.sendRedirect(request.getContextPath() + "/orderList");
+                InvokerServlet.commandsList.get("clientOrdersPage").execute(request,response,context);
                 return;
             }
         }
@@ -54,7 +59,7 @@ public class GetPageOrdersWorker implements Command {
         List<OrderObject> list = null;
         String status;
         try {
-            status = request.getAttribute("statusOrder").toString();
+            status = request.getParameter("statusOrder").toString();
         } catch (Exception e) {
             status = "Complete";
         }
@@ -62,10 +67,9 @@ public class GetPageOrdersWorker implements Command {
             list = DBUtils.listOrder(conn, status);
         } catch (SQLException e) {
             e.printStackTrace();
+            consolLogger.error("Error. Problem with listOrder in order workers.");
             errorString = e.getMessage();
-
         }
-        System.out.println("Get List of order success!");
         // Сохранить информацию в request attribute перед тем как forward к views.
         request.setAttribute("errorString", errorString);
         request.setAttribute("orderList", list);
@@ -73,8 +77,9 @@ public class GetPageOrdersWorker implements Command {
 
         //RequestDispatcher dispatcher = request.getServletContext()
         //        .getRequestDispatcher("/WEB-INF/views/orderList/orderListWorker.jsp");
-        System.out.println(list.size());
-        RequestDispatcher dispatcher = context.getRequestDispatcher("/WEB-INF/views/orderList/orderListWorker.jsp");
+        RequestDispatcher dispatcher = context.
+                getRequestDispatcher("/WEB-INF/views/orderList/orderListWorker.jsp");
+
         dispatcher.forward(request, response);
     }
 }

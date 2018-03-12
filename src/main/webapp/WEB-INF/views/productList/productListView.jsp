@@ -39,8 +39,13 @@
                         </tr>
                     </c:forEach>
                 </table>
-
-                <p style="font-size: 12px">Please <a href="/login">login</a> if you want buy something!.</p>
+                <form action="${pageContext.request.contextPath}/pack"
+                      method="post">
+                    <p style="font-size: 12px">Please
+                        <input type="hidden" name="newPage" value="loginPage">
+                        <input type="submit" value="login"/>
+                        if you want buy something!.</p>
+                </form>
             </div>
 
             <div class="c_3 transp">CONTENT3

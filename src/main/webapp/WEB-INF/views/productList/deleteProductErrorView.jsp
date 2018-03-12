@@ -24,7 +24,6 @@
                 <h3>Delete Product</h3>
 
                 <p style="color: red;">${errorString}</p>
-                <a href="">Product List</a>
 
             </div>
 

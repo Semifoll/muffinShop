@@ -22,8 +22,8 @@
                 <h3>Login Page</h3>
                 <p style="color: red;">${errorString}</p>
 
-                <form action="${pageContext.request.contextPath}/authorization"
-                        method="get">
+                <form action="${pageContext.request.contextPath}/pack"
+                        method="post">
                     <table border="0">
                         <tr>
                             <td>User nick name</td>
@@ -39,8 +39,10 @@
                         </tr>
                         <tr>
                             <td colspan="2">
+                                <input type="hidden" name="newPage" value="authorization">
                                 <input type="submit" value="Submit"/>
-                                <a href="${pageContext.request.contextPath}/">Cancel</a>
+                                <input type="reset" value="Clear">
+
                             </td>
                         </tr>
                     </table>

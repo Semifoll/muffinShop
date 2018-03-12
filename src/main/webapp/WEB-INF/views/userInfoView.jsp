@@ -34,16 +34,33 @@
                 <br/>
                 Rights: <b>${user.accessRights}</b>
                 <br/>
+
             </div>
 
             <div class="c_3 transp">
                 <c:if test="${user.accessRights == 'Admin'}">
-                    <a href="accountView">Change users role</a><br/>
-                    <a href="productList">Create new product</a>
+                    <form action="${pageContext.request.contextPath}/pack"
+                          method="post">
+                        <button  name="newPage" value="pageAccountView" type="submit">
+                            Change users role</button><br/>
+                        <button  name="newPage" value="createProductPage" type="submit">
+                            Create new product</button><br/>
+                        <button  name="newPage" value="wOrders" type="submit">
+                            Change orders status</button><br/>
+                    </form>
                 </c:if>
                 <c:if test="${user.accessRights == 'Worker'}">
-                    <a href="orderListWorker">Change orders status</a><br/>
+                    <form action="${pageContext.request.contextPath}/pack"
+                          method="post">
+                        <input type="hidden" name="newPage" value="wOrders">
+                        <input type="submit" value="Change orders status"/>
+                    </form>
                 </c:if>
+                <form action="${pageContext.request.contextPath}/pack"
+                      method="post">
+                    <button  name="newPage" value="loginOut" type="submit">
+                        LogOut</button><br/>
+                </form>
             </div>
         </div>
     </div>

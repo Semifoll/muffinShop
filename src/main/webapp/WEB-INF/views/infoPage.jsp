@@ -22,6 +22,7 @@
             <jsp:include page="_menu_page.jsp"></jsp:include>
 
             <div class="c_2 transp">
+                You may contact with me.
                 Contacts:<br/>
                 <b>phone: +79052981451</b><br/>
                 <a href="https://vk.com/id37195151"> vkontacte</a><br/>

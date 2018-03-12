@@ -2,6 +2,8 @@ package comServlet;
 
 import beans.Role;
 import beans.UserAccount;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -32,10 +34,7 @@ public class GetPageAccountView implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
-        HttpSession session = request.getSession();
-
-
-        RequestDispatcher dispatcher;
+        final Logger consolLogger = LogManager.getLogger();
 
         String errorString = null;
         List<Role> listRole = null;
@@ -43,13 +42,10 @@ public class GetPageAccountView implements Command {
             listRole = DBUtils.queryRole(conn);
         } catch (SQLException e) {
             e.printStackTrace();
+            consolLogger.error("Error from account view. Problem with query role. ");
             errorString = e.getMessage();
         }
-        System.out.println("Get List of role success!");
         // Сохранить информацию в request attribute перед тем как forward к views.
-
-
-
         request.setAttribute("roleList", listRole);
 
         List<UserAccount> listUser = null;
@@ -57,20 +53,17 @@ public class GetPageAccountView implements Command {
             listUser = DBUtils.queryUsersAccounts(conn);
         } catch (SQLException e) {
             e.printStackTrace();
+            consolLogger.error("Error from account view. Problem with query user account. ");
             errorString =errorString +" "+ e.getMessage();
         }
         request.setAttribute("usersList", listUser);
 
-        dispatcher = request.getServletContext()
+        RequestDispatcher dispatcher = request.getServletContext()
                 .getRequestDispatcher("/WEB-INF/views/accountsView.jsp");
 
-        // Forward к /WEB-INF/views/productListView.jsp
         // Сохранить информацию в request attribute перед тем как forward (перенаправить).
-
         request.setAttribute("errorString", errorString);
-
-        System.out.println("List User size ="+listUser.size());
-        System.out.println("List Role size ="+listRole.size());
         dispatcher.forward(request, response);
+
     }
 }

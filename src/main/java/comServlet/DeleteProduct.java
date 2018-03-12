@@ -1,5 +1,7 @@
 package comServlet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.DBUtils;
 import utils.MyUtils;
 
@@ -28,6 +30,7 @@ public class DeleteProduct implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws ServletException, IOException {
         Connection conn = MyUtils.getStoredConnection(request);
+        final Logger consolLogger = LogManager.getLogger();
 
         String code = (String) request.getParameter("code");
 
@@ -45,6 +48,7 @@ public class DeleteProduct implements Command {
             // Сохранить информацию в request attribute перед тем как forward к views.
             request.setAttribute("errorString", errorString);
             //
+            consolLogger.error("Error. Delete with problem. ");
             RequestDispatcher dispatcher = request.getServletContext()
                     .getRequestDispatcher("/WEB-INF/views/deleteProductErrorView.jsp");
             dispatcher.forward(request, response);
@@ -52,7 +56,8 @@ public class DeleteProduct implements Command {
         // Если все хорошо.
         // Redirect (перенаправить) к странице со списком продуктов.
         else {
-            response.sendRedirect(request.getContextPath() + "/productList");
+            //response.sendRedirect(request.getContextPath() + "/productList");
+            InvokerServlet.commandsList.get("pageAdminProductList").execute(request,response,context);
         }
     }
 }
